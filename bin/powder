@@ -155,30 +155,30 @@ module Powder
 
     desc "version", "Shows the version"
     def version
-       say "powder #{Powder::VERSION}"
+      say "powder #{Powder::VERSION}"
     end
 
     desc "config", "Shows current pow configuration"
     def config
       results = %x{curl --silent -H host:pow localhost/config.json}.gsub(':','=>')
       return say("Error: Cannot get Pow config. Pow may be down. Try 'powder up' first.") if results.empty? || !(results =~ /^\{/)
-      json = eval results
-      json.each do |k,v|
-        case v
-        when String, Numeric
-          say "#{k.ljust(12,' ')} #{v}"
-        when Array
-          say "#{k.ljust(12,' ')} #{v.join ', '}\n"
+        json = eval results
+        json.each do |k,v|
+          case v
+          when String, Numeric
+            say "#{k.ljust(12,' ')} #{v}"
+          when Array
+            say "#{k.ljust(12,' ')} #{v.join ', '}\n"
+          end
         end
-      end
     end
 
     desc "status", "Shows current pow status"
     def status
       results = %x{curl --silent -H host:pow localhost/status.json}.gsub(':','=>')
       return say("Error: Cannot get Pow status. Pow may be down. Try 'powder up' first.") if results.empty? || !(results =~ /^\{/)
-      json = eval results
-      json.each {|k,v| say "#{k.ljust(12, ' ')} #{v}"}
+        json = eval results
+        json.each {|k,v| say "#{k.ljust(12, ' ')} #{v}"}
     end
 
     private
