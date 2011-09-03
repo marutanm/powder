@@ -106,6 +106,17 @@ module Powder
       create_file "#{POW_PATH}/powder_index/public/index.html", list
     end
 
+    desc "index", "Create index page of Powable apps"
+    def index
+      list = "<ul>"
+      Dir[POW_PATH + "/*"].map { |a| 
+        list << "<li><a href=http://#{File.basename(a)}.dev>#{File.basename(a)}</a></li>" unless File.basename(a) == 'powder_index'
+      }
+      list << "</ul>"
+      FileUtils.mkdir_p("#{POW_PATH}/powder_index/public")
+      create_file "#{POW_PATH}/powder_index/public/index.html", list
+    end
+
     desc "open", "Open a pow in the browser"
     def open(name=nil)
       %x{open http://#{name || current_dir_pow_name}.#{domain}}
