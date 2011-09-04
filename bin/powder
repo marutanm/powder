@@ -20,6 +20,7 @@ module Powder
     map 'update' => 'install'
 
     POW_PATH = "#{ENV['HOME']}/.pow"
+    INDEX_PATH = "#{ENV['HOME']}/.powder_index/"
     POW_DAEMON_PLIST_PATH="#{ENV['HOME']}/Library/LaunchAgents/cx.pow.powd.plist"
     POW_FIREWALL_PLIST_PATH = "/Library/LaunchDaemons/cx.pow.firewall.plist"
 
@@ -97,24 +98,16 @@ module Powder
 
     desc "index", "Create index page of Powable apps"
     def index
+      name = 'powder_index'
       list = "<ul>"
       Dir[POW_PATH + "/*"].map { |a| 
-        list << "<li><a href=http://#{File.basename(a)}.dev>#{File.basename(a)}</a></li>" unless File.basename(a) == 'powder_index'
+        list << "<li><a href=http://#{File.basename(a)}.dev>#{File.basename(a)}</a></li>" unless File.basename(a) == name
       }
       list << "</ul>"
-      FileUtils.mkdir_p("#{POW_PATH}/powder_index/public")
-      create_file "#{POW_PATH}/powder_index/public/index.html", list
-    end
-
-    desc "index", "Create index page of Powable apps"
-    def index
-      list = "<ul>"
-      Dir[POW_PATH + "/*"].map { |a| 
-        list << "<li><a href=http://#{File.basename(a)}.dev>#{File.basename(a)}</a></li>" unless File.basename(a) == 'powder_index'
-      }
-      list << "</ul>"
-      FileUtils.mkdir_p("#{POW_PATH}/powder_index/public")
-      create_file "#{POW_PATH}/powder_index/public/index.html", list
+      FileUtils.mkdir_p("#{INDEX_PATH}/public")
+      create_file "#{INDEX_PATH}/public/index.html", list
+      symlink_path = "#{POW_PATH}/#{name}"
+      FileUtils.ln_s("#{INDEX_PATH}", "#{POW_PATH}/#{name}") unless File.exists?(symlink_path)
     end
 
     desc "open", "Open a pow in the browser"
